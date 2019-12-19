@@ -1,14 +1,45 @@
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
+const express = require('express');
+const path = require('path');
+const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 //pass in name of serial/COM port as node arg
 const portName = process.argv[2];
 const port = new SerialPort(portName, { baudRate: 9600 });
 const parser = port.pipe(new Readline({ delimiter: '\n' }));
 
-let highScore, currentScore, ballsPlayed = 0;
-let maxBalls = 9;
+
+//WEB SERVER
+app.use(express.static(path.join(__dirname, '../build')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build', 'index.html'))
+});
+
+io.on('connection', function (socket) {
+    socket.emit('game:connected', { hello: 'world' });
+    setInterval(() => {
+        sendGameUpdate(socket)
+    }, 5000);
+});
+
+
+//GAME LOGIC
+var highScore = 0;
+var currentScore = 0;
+var ballsPlayed = 0;
+var maxBalls = 9;
+
+function sendGameUpdate(socket) {
+    let data = {highScore, currentScore, ballsPlayed};
+    console.log('Game update data:');
+    console.dir(data);
+    socket.emit('game:update', data);
+}
 
 function recordScore(value) {
+    console.log('recording score');
     clearTimeout(noScoreTimeout);
     currentScore += value;
     highScore = highScore > currentScore ? highScore : currentScore;
@@ -35,11 +66,11 @@ function resetGame() {
 }
 
 const Events = {
-    H0 : recordScore(100),
-    H1 : recordScore(100),
-    H2 : recordScore(50),
-    H3 : recordScore(25),
-    H4 : recordScore(10),
+    H0 : () => recordScore(100),
+    H1 : () => recordScore(100),
+    H2 : () => recordScore(50),
+    H3 : () => recordScore(25),
+    H4 : () => recordScore(10),
 };
 
 port.on("open", () => {
@@ -53,3 +84,5 @@ parser.on('data', data =>{
         eventFunc();
     }
 });
+
+server.listen(9001);
