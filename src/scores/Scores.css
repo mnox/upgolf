@@ -1,0 +1,73 @@
+.score-digit-container {
+    position: relative;
+    text-align: right;
+    display: inline-block;
+}
+
+.score-digit {
+    position: absolute;
+    color: #C1E9FF;
+    height: 100%;
+    width: 100%;
+    font-style: italic;
+    text-shadow: 0 2px 15px #2A97D4;
+}
+
+.score-digit.dimmed {
+    opacity: .1;
+    color: #2A97D4;
+    text-shadow: none;
+}
+
+.main-score {
+    font-size: 200px;
+    width: 366px;
+    position: absolute;
+    top: 204px;
+    left: 332px;
+}
+
+.main-score .score-digit {
+    transform: scale(1.1, 1.1);
+}
+
+.main-score .score-digit [data-digit-value='1'] {
+    margin-right: -10px;
+}
+
+.main-score .score-digit-container {
+    width: 104px;
+    height: 197px;
+}
+
+.balls-played {
+    position: absolute;
+    top: 421px;
+    left: 479px;
+    font-size: 108px;
+    line-height: 108px;
+}
+
+.balls-played .score-digit-container {
+    height: 96px;
+    width: 55px;
+}
+
+.balls-played .score-digit [data-digit-value='1'] {
+    margin-right: -7px;
+}
+
+.high-score {
+    position: absolute;
+    bottom: 76px;
+    left: 108px;
+    height: 75px;
+    width: 200px;
+    font-size: 75px;
+    line-height: 75px;
+}
+
+.high-score .score-digit-container {
+    height: 75px;
+    width: 36px;
+}
