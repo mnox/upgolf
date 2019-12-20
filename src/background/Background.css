@@ -1,0 +1,36 @@
+.background-container {
+    height: 768px;
+    width: 1024px;
+    position: relative;
+}
+
+.background-layer {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0;
+}
+
+.background-layer.active {
+    opacity: 1;
+}
+
+.main-display {
+    background: url("./main-display.png");
+    z-index: 2;
+    opacity: 1;
+}
+
+.dots-primary {
+    background: url("./dots-primary.png");
+}
+
+.dots-secondary {
+    background: url("./dots-secondary.png");
+}
+
+.dots-tertiary {
+    background: url("./dots-tertiary.png");
+}

@@ -20,6 +20,9 @@ app.get('/', (req, res) => {
 io.on('connection', function (socket) {
     app.socket = socket;
     socket.emit('game:connected', { hello: 'world' });
+    socket.on('dispenseBall', () => {
+        recordScore(0);
+    });
     console.log('New socket connection');
 });
 
@@ -39,7 +42,6 @@ function sendGameUpdate() {
 
 function recordScore(value) {
     console.log('recording score');
-    clearTimeout(noScoreTimeout);
     currentScore += value;
     highScore = highScore > currentScore ? highScore : currentScore;
     ballsPlayed ++;
@@ -52,13 +54,9 @@ function recordScore(value) {
     sendGameUpdate();
 }
 
-var noScoreTimeout = null;
-
 function dispenseBall() {
+    console.log('dispensing ball');
     port.write('B\r');
-    noScoreTimeout = setTimeout(() => {
-        recordScore(0);
-    }, 10000);
 }
 
 function resetGame() {
@@ -84,6 +82,7 @@ const Events = {
     H2 : () => recordScore(50),
     H3 : () => recordScore(25),
     H4 : () => recordScore(10),
+    B  : () => ballDispensed(),
 };
 
 port.on("open", () => {
