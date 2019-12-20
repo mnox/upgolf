@@ -11,7 +11,11 @@ function sendDispenseBallRequest() {
 }
 
 function shake(callback) {
-    let layers = [''];
+    setTimeout(()=> callback(['secondary']), 300);
+    setTimeout(()=> callback(['tertiary']), 600);
+    setTimeout(()=> callback(['secondary']), 900);
+    setTimeout(()=> callback(['tertiary']), 1200);
+    setTimeout(()=> callback(['primary']), 1500);
 }
 
 function App() {
@@ -25,6 +29,7 @@ function App() {
     });
 
     socket.on('game:update', function (data) {
+        shake(setActiveLayers);
         console.log('Game Update:');
         console.dir(data);
         setMainScore(data.currentScore);
