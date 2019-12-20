@@ -29,10 +29,6 @@ var currentScore = 0;
 var ballsPlayed = 0;
 var maxBalls = 9;
 
-setInterval(() => {
-    recordScore(100);
-}, 5000);
-
 function sendGameUpdate() {
     let data = {highScore, currentScore, ballsPlayed};
     console.log('Game update data:');
