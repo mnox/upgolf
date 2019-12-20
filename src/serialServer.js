@@ -78,7 +78,7 @@ port.on("open", () => {
 });
 parser.on('data', data =>{
     //parse data into event
-    let eventCode = data;
+    let eventCode = data.slice(0,2);
     let eventFunc = Events[eventCode];
     if(typeof eventFunc === 'function') {
         eventFunc();
