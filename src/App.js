@@ -3,12 +3,14 @@ import './App.css';
 import Score from './scores/Score';
 
 const io = require('socket.io-client');
+const socket = io.connect('http://localhost:9001');
 
 function App() {
-
-    const socket = io.connect('http://localhost:9001');
+    console.log('running app');
 
     socket.on('game:update', function (data) {
+        console.log('Game Update:');
+        console.dir(data);
         setMainScore(data.currentScore);
         setHighScore(data.highScore);
         setBallsPlayed(data.ballsPlayed);
