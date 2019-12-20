@@ -11,15 +11,15 @@ export default function Background(props) {
 
     return (
         <div className="background-container">
-            <div className="background-layer main-display"></div>
+            <div key="00" className="background-layer main-display"></div>
             {
-                layers.map( layer => {
+                layers.map( (layer, index) => {
                     let className = `background-layer dots-${layer}`;
                     if (props.activeLayers.includes(layer)) {
                         className += ' active';
                     }
                     return (
-                        <div className={className}></div>
+                        <div key={index} className={className}></div>
                     )
                 })
             }
