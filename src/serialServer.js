@@ -18,10 +18,8 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', function (socket) {
+    app.socket = socket;
     socket.emit('game:connected', { hello: 'world' });
-    setInterval(() => {
-        sendGameUpdate(socket)
-    }, 5000);
 });
 
 
@@ -31,11 +29,15 @@ var currentScore = 0;
 var ballsPlayed = 0;
 var maxBalls = 9;
 
-function sendGameUpdate(socket) {
+setInterval(() => {
+    recordScore(100);
+}, 5000);
+
+function sendGameUpdate() {
     let data = {highScore, currentScore, ballsPlayed};
     console.log('Game update data:');
     console.dir(data);
-    socket.emit('game:update', data);
+    app.socket.emit('game:update', data);
 }
 
 function recordScore(value) {
@@ -49,6 +51,8 @@ function recordScore(value) {
     } else {
         resetGame();
     }
+
+    sendGameUpdate();
 }
 
 let noScoreTimeout = null;
