@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
 io.on('connection', function (socket) {
     app.socket = socket;
     socket.emit('game:connected', { hello: 'world' });
+    console.log('New socket connection');
 });
 
 
@@ -42,7 +43,7 @@ function recordScore(value) {
     currentScore += value;
     highScore = highScore > currentScore ? highScore : currentScore;
     ballsPlayed ++;
-    if(ballsPlayed < maxBalls) {
+    if(ballsPlayed <= maxBalls) {
         dispenseBall();
     } else {
         resetGame();
@@ -51,18 +52,30 @@ function recordScore(value) {
     sendGameUpdate();
 }
 
-let noScoreTimeout = null;
+var noScoreTimeout = null;
 
 function dispenseBall() {
-    port.write('B\n');
-    noScoreTimeout = () => {
+    port.write('B\r');
+    noScoreTimeout = setTimeout(() => {
         recordScore(0);
-    }
+    }, 10000);
 }
 
 function resetGame() {
     currentScore = 0;
     ballsPlayed = 0;
+}
+
+// setInterval(recordRandomScore, 500);
+
+function recordRandomScore() {
+    let eventNumber = Math.floor(Math.random() * Math.floor(4));
+    let eventString = `H${eventNumber.toString()}`;
+    console.log(eventString);
+    let eventFunc = Events[eventString];
+    if(typeof app.socket !== 'undefined') {
+        eventFunc();
+    }
 }
 
 const Events = {
