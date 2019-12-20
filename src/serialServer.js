@@ -64,8 +64,6 @@ function resetGame() {
     ballsPlayed = 0;
 }
 
-// setInterval(recordRandomScore, 500);
-
 function recordRandomScore() {
     let eventNumber = Math.floor(Math.random() * Math.floor(4));
     let eventString = `H${eventNumber.toString()}`;
