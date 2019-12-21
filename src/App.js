@@ -1,57 +1,68 @@
-import React, {useState} from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import Score from './scores/Score';
 import Background from './background/Background';
 
 const io = require('socket.io-client');
-const socket = io.connect('http://localhost:9001');
 
-function sendDispenseBallRequest() {
-    socket.emit('dispenseBall');
-}
+class App extends Component {
 
-function shake(callback) {
-    setTimeout(()=> callback(['secondary']), 300);
-    setTimeout(()=> callback(['tertiary']), 600);
-    setTimeout(()=> callback(['secondary']), 900);
-    setTimeout(()=> callback(['tertiary']), 1200);
-    setTimeout(()=> callback(['primary']), 1500);
-}
+    constructor(props) {
+        super(props);
 
-function App() {
-    document.addEventListener('keyup', (event) => {
+        this.state = {
+            activeLayers: ['primary'],
+            mainScore       : 0,
+            ballsPlayed     : 0,
+            highScore       : 0,
+        };
+
+
+        this.socket = io.connect('http://localhost:9001');
+        this.socket.on('game:update', data => {
+            this.setState(data);
+            this.shake();
+        });
+
+        document.removeEventListener('keyup', this.handleKeyUp.bind(this));
+        document.addEventListener('keyup', this.handleKeyUp.bind(this));
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <div className="main-container">
+                    <Background activeLayers={this.state.activeLayers}/>
+                    <Score extraClass="main-score" value={this.state.mainScore} length={3}/>
+                    <Score extraClass="balls-played" value={this.state.ballsPlayed} length={1}/>
+                    <Score extraClass="high-score" value={this.state.highScore} length={3}/>
+                </div>
+            </div>
+        );
+    }
+
+    handleKeyUp(event) {
         event.preventDefault();
         event.stopImmediatePropagation();
         event.stopPropagation();
         if(event.which === 32) {
-            sendDispenseBallRequest();
+            this.sendDispenseBallRequest();
         }
-    });
+    }
 
-    socket.on('game:update', function (data) {
-        shake(setActiveLayers);
-        console.log('Game Update:');
-        console.dir(data);
-        setMainScore(data.currentScore);
-        setHighScore(data.highScore);
-        setBallsPlayed(data.ballsPlayed);
-    });
+    sendDispenseBallRequest() {
+        console.log('sending dispense ball request');
+        this.socket.emit('dispenseBall');
+    }
 
-    let [mainScore, setMainScore] = useState(0);
-    let [ballsPlayed, setBallsPlayed] = useState(0);
-    let [highScore, setHighScore] = useState(0);
-    let [activeLayers, setActiveLayers] = useState(['primary']);
+    shake() {
+        setTimeout(()=> this.setState({activeLayers:['secondary']}), 300);
+        setTimeout(()=> this.setState({activeLayers:['tertiary']}), 600);
+        setTimeout(()=> this.setState({activeLayers:['secondary']}), 900);
+        setTimeout(()=> this.setState({activeLayers:['tertiary']}), 1200);
+        setTimeout(()=> this.setState({activeLayers:['primary']}), 1500);
+    }
 
-  return (
-    <div className="App">
-      <div className="main-container">
-          <Background activeLayers={activeLayers}/>
-        <Score extraClass="main-score" value={mainScore} length={3}/>
-        <Score extraClass="balls-played" value={ballsPlayed} length={1}/>
-        <Score extraClass="high-score" value={highScore} length={3}/>
-      </div>
-    </div>
-  );
 }
 
 export default App;

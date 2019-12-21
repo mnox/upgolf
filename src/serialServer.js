@@ -41,7 +41,6 @@ function sendGameUpdate() {
 }
 
 function recordScore(value) {
-    console.log('recording score');
     currentScore += value;
     highScore = highScore > currentScore ? highScore : currentScore;
     ballsPlayed ++;
