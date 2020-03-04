@@ -2,6 +2,8 @@ Raspberry PI + NodeJS + ReactJS game (Putting + Ski-ball)
 
 Demo: https://photos.app.goo.gl/JrCD8tto51jvPLWc6
 
+![preview](https://github.com/mnox/upgolf/blob/master/FULL-1024x768%20-%20DarkBlueTheme.png)
+
 ## Available Scripts
 
 In the project directory, you can run:
